@@ -149,8 +149,14 @@ library_dlsym(VALUE self, VALUE name)
     Check_Type(name, T_STRING);
 
     Data_Get_Struct(self, Library, library);
-    address = dl_sym(library->handle, StringValueCStr(name));
-    
+    char * fn = StringValueCStr(name);
+    if(isdigit(fn[0])) {
+        int ord;
+        sscanf(fn, "%u", &ord);
+        address = dl_sym(library->handle, (LPCSTR)(ord));
+    } else {
+        address = dl_sym(library->handle, fn);
+    }
     return address != NULL ? symbol_new(self, address, name) : Qnil;
 }
 
