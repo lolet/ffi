@@ -183,8 +183,15 @@ fntype_initialize(int argc, VALUE* argv, VALUE self)
 
 #if defined(X86_WIN32)
     rbConventionStr = (rbConvention != Qnil) ? rb_funcall2(rbConvention, rb_intern("to_s"), 0, NULL) : Qnil;
-    fnInfo->abi = (rbConventionStr != Qnil && strcmp(StringValueCStr(rbConventionStr), "stdcall") == 0)
-            ? FFI_STDCALL : FFI_DEFAULT_ABI;
+    fnInfo->abi = FFI_DEFAULT_ABI;
+    if (rbConventionStr != Qnil) {
+        if(strcmp(StringValueCStr(rbConventionStr), "stdcall") == 0)
+            fnInfo->abi = FFI_STDCALL;
+         else if(strcmp(StringValueCStr(rbConventionStr), "fastcall") == 0)
+            fnInfo->abi = FFI_FASTCALL;
+         else if(strcmp(StringValueCStr(rbConventionStr), "thiscall") == 0)
+            fnInfo->abi = FFI_THISCALL;
+     }
 #else
     fnInfo->abi = FFI_DEFAULT_ABI;
 #endif

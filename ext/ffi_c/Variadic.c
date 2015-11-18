@@ -118,8 +118,15 @@ variadic_initialize(VALUE self, VALUE rbFunction, VALUE rbParameterTypes, VALUE 
 
 #if defined(X86_WIN32)
     rbConventionStr = rb_funcall2(convention, rb_intern("to_s"), 0, NULL);
-    invoker->abi = (RTEST(convention) && strcmp(StringValueCStr(rbConventionStr), "stdcall") == 0)
-            ? FFI_STDCALL : FFI_DEFAULT_ABI;
+    invoker->abi = FFI_DEFAULT_ABI;
+    if (RTEST(convention)) {
+        if(strcmp(StringValueCStr(rbConventionStr), "stdcall") == 0)
+            invoker->abi = FFI_STDCALL;
+         else if(strcmp(StringValueCStr(rbConventionStr), "fastcall") == 0)
+            invoker->abi = FFI_FASTCALL;
+         else if(strcmp(StringValueCStr(rbConventionStr), "thiscall") == 0)
+            invoker->abi = FFI_THISCALL;
+     }
 #else
     invoker->abi = FFI_DEFAULT_ABI;
 #endif

@@ -67,6 +67,8 @@ typedef enum ffi_abi {
 #ifdef X86_WIN32
   FFI_SYSV,
   FFI_STDCALL,
+  FFI_THISCALL,
+  FFI_FASTCALL,
   FFI_LAST_ABI,
   /* TODO: Add fastcall support for the sake of completeness */
   FFI_DEFAULT_ABI = FFI_SYSV
